@@ -1,30 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: java-hello-deployment
+  name: my-app-deployment
   labels:
-    app: java-hello
+    app: my-app
 spec:
-  replicas: 1
-  selectors:
+  replicas: 2
+  selector:
     matchLabels:
-      app: java-hello
-  templates:
+      app: my-app
+  template:
     metadata:
       labels:
-        app: java-hello
-  containers:
-    - name: java-hello-container
-      image: ditiss1/hello:1.0
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: ditiss1/hello:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: java-hello-service
 spec:
-  type: ClusterIP
   selector:
-    app: java-hello
+    app: my-app
   ports:
-  - port: 8092
-
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
